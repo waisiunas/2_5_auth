@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,19 +19,32 @@ use App\Http\Controllers\Auth\RegisterController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
-Route::get('/register', [RegisterController::class, 'signup'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
+Route::controller(RegisterController::class)->group(function() {
+    Route::get('/register','signup')->name('register');
+    Route::post('/register','register');
+});
 
-Route::get('/login', [LoginController::class, 'signin'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
+Route::controller(LoginController::class)->group(function() {
+    Route::get('/login','signin')->name('login');
+    Route::post('/login','login');
+});
 
-Route::get('/logout', [LogoutController::class, 'logout'])->name('logout');
+Route::controller(LogoutController::class)->group(function() {
+    Route::get('/logout','logout')->name('logout');
+});
+
+Route::controller(AdminDashboardController::class)->group(function() {
+    Route::get('/admin/dashboard','index')->name('admin.dashboard');
+});
+
+Route::controller(CourseController::class)->group(function() {
+    Route::get('/courses','index')->name('courses.index');
+    Route::get('/courses/create','create')->name('courses.create');
+    Route::post('/courses/create','store');
+});
 
 
-Route::get('/admin/dashboard', function(){
-    return view('admin.dashboard');
-})->name('admin.dashboard');
 
